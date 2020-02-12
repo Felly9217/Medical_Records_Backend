@@ -2,8 +2,13 @@ package patientpredictor;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +20,7 @@ public class PatientCollection implements PatientCollectionADT {
 		PatientMap = new HashMap<String, Patient>();
 		uploadFile("./patientpredictor/data.csv");
 		System.out.println(addPatientsFromFile("./patientpredictor/newdata.csv"));
+		writing();
 	}
 
 	public Patient getPatient(String id) {
@@ -81,28 +87,16 @@ public class PatientCollection implements PatientCollectionADT {
 					readLine = line.split(",");
 					ArrayList<Double> genome = new ArrayList<Double>();
 					String g;
-					if (readLine.length == 4779) {
-						String result = readLine[0];
-						String predict = readLine[1];
-						String id = readLine[2];
-						for (int i = 3; i < 4779; i++) {
-							g = readLine[i];
-							genome.add(Double.parseDouble(g));
-						}
-						Patient p = new Patient(result, predict, id, genome);
+					String id = readLine[0];
+					for (int i = 1; i < 4777; i++) {
+						g = readLine[i];
+						genome.add(Double.parseDouble(g));
+					}
+					if (!PatientMap.containsKey(id)) {
+						Patient p = new Patient("unknown", "unknown", id, genome);
 						PatientMap.put(id, p);
-					} else if (readLine.length == 4777) {
-						String id = readLine[0];
-						for (int i = 1; i < 4777; i++) {
-							g = readLine[i];
-							genome.add(Double.parseDouble(g));
-						}
-						if (!PatientMap.containsKey(id)) {
-							Patient p = new Patient("unknown", "unknown", id, genome);
-							PatientMap.put(id, p);
-						} else {
-							toReturn = "The number ID " + id + " is already in the system";
-						}
+					} else {
+						toReturn = "This " + id + " is already in the system";
 					}
 				}
 			} catch (Exception e2) {
@@ -170,29 +164,15 @@ public class PatientCollection implements PatientCollectionADT {
 					readLine = line.split(",");
 					ArrayList<Double> genome = new ArrayList<Double>();
 					String g;
-					if (readLine.length == 4779) {
-						String result = readLine[0];
-						String predict = readLine[1];
-						String id = readLine[2];
-						for (int i = 3; i < 4779; i++) {
-							g = readLine[i];
-							genome.add(Double.parseDouble(g));
-						}
-						Patient p = new Patient(result, predict, id, genome);
-						PatientMap.put(id, p);
-					} else if (readLine.length == 4777) {
-						String id = readLine[0];
-						for (int i = 1; i < 4777; i++) {
-							g = readLine[i];
-							genome.add(Double.parseDouble(g));
-						}
-						if (!PatientMap.containsKey(id)) {
-							Patient p = new Patient("unknown", "unknown", id, genome);
-							PatientMap.put(id, p);
-						} else {
-							System.out.println("The number ID " + id + " is already in the system");
-						}
+					String result = readLine[0];
+					String predict = readLine[1];
+					String id = readLine[2];
+					for (int i = 3; i < 4779; i++) {
+						g = readLine[i];
+						genome.add(Double.parseDouble(g));
 					}
+					Patient p = new Patient(result, predict, id, genome);
+					PatientMap.put(id, p);
 				}
 			} catch (Exception e2) {
 				System.err.println(
@@ -214,7 +194,31 @@ public class PatientCollection implements PatientCollectionADT {
 				}
 		}
 	}
-
+	
+	//write to file
+    public void writing() {
+        try {
+            //Whatever the file path is.
+            File statText = new File("./patientpredictor/test.csv");
+            FileOutputStream is = new FileOutputStream(statText);
+            OutputStreamWriter osw = new OutputStreamWriter(is);    
+            Writer w = new BufferedWriter(osw);
+            for(String key : PatientMap.keySet()) {
+            	Patient p = PatientMap.get(key);
+            	w.write(p.getResult() + ",");
+            	w.write(p.getPredict() + ",");
+            	w.write(p.getId() + ",");
+            	for(int i = 0; i < 4776; i++) {
+            		w.write(p.getGenome().get(i).toString() + ",");
+            	}
+            	w.write("\n");
+            }
+            w.close();
+        } catch (IOException e) {
+            System.err.println("Problem writing to the file statsTest.txt");
+        }
+    }
+    
 	public String toString() {
 		Patient p = new Patient();
 		String g = "";
