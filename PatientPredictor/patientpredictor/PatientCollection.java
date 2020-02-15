@@ -103,6 +103,8 @@ public class PatientCollection implements PatientCollectionADT {
 						g = readLine[i];
 						genome.add(Double.parseDouble(g));
 					}
+					
+					//check for duplicate id
 					if (!PatientMap.containsKey(id)) {
 						Predictor pre = new Predictor();
 						String predictor = pre.predict(genome.get(3697), genome.get(3258));
@@ -198,7 +200,7 @@ public class PatientCollection implements PatientCollectionADT {
 		}
 	}
 	
-	//write to file
+	//write the new upload file to file
     public void writingToFile(String fileName) {
         try {
             //Whatever the file path is.

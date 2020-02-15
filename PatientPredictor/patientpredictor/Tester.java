@@ -1,8 +1,18 @@
+//**************************************************************************************
+//Name:        Longtin Hang
+//Course:	   Java Development CSCI 3381 9:00am
+//Description: This program is read patient files and predict the patient progression
+// 			   and update the file with newly added patients.
+//**************************************************************************************
+
+
+
 package patientpredictor;
 
 public class Tester {
 
 	public static void main(String[] args) {
+		//create an instance of PatientCollection class
 		PatientCollection patientCollection = new PatientCollection();
 		
 		//upload both the old and new data
