@@ -22,6 +22,7 @@ public class Patient {
 		genome = g;
 	}
 
+	//getters and setters 
 	public String getResult() {
 		return result;
 	}
@@ -55,11 +56,6 @@ public class Patient {
 	}
 	
 	public String toString() {
-		String toReturn;
-		toReturn = id + " " + predict + " " + result;
-		for(int i = 0; i < genome.size(); i++) {
-			toReturn += " " + genome.get(i);
-		}
-		return toReturn;
+		return id + " " + predict + " " + result + " " + genome.get(3697) + ", " + genome.get(2358) + "\n";
 	}
 }

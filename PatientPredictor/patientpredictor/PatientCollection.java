@@ -15,32 +15,30 @@ import java.util.Map;
 
 public class PatientCollection implements PatientCollectionADT {
 	private Map<String, Patient> PatientMap;
-
+	
 	public PatientCollection() {
 		PatientMap = new HashMap<String, Patient>();
-		uploadFile("./patientpredictor/data.csv");
-		System.out.println(addPatientsFromFile("./patientpredictor/newdata.csv"));
-		writing();
 	}
 
+	// Return the patient with the given id. Return void if the id does
+	// not exist in the collection
 	public Patient getPatient(String id) {
 		return PatientMap.containsKey(id) ? PatientMap.get(id) : null;
 	}
-	// Return the patient with the given id. Return void if the id does
-	// not exist in the collection
 
+	// Remove and return the Patient with the given id. Return void if the id does
+	// not exist.
 	public Patient removePatient(String id) {
 		return PatientMap.containsKey(id) ? PatientMap.remove(id) : null;
 	}
-	// Remove and return the Patient with the given id. Return void if the id does
-	// not exist.
 
+	// Set the result field for the patient with given id.
 	public void setResultForPatient(String id, String result) {
 		Patient p = PatientMap.get(id);
 		p.setResult(result);
 	}
-	// Set the result field for the patient with given id.
-
+	
+	// Return an ArrayList with all of the collection's patient ids
 	public ArrayList<String> getIds() {
 		ArrayList<String> toReturn = new ArrayList<String>();
 		for (String key : PatientMap.keySet()) {
@@ -50,8 +48,17 @@ public class PatientCollection implements PatientCollectionADT {
 
 		return toReturn;
 	}
-	// Return an ArrayList with all of the collection's patient ids
 
+	// Method reads all lines from comma separated file named fileName.
+	// Each line must contain a unique patient identifier followed by exactly 4776
+	// doubles.
+	// If the line does not meet the criteria, it is not added to the patient
+	// collection,
+	// and an error message is included in the return String.
+	// The error message will indicate which line was in error and what the error
+	// was.
+	// expected line format
+	// id,protein1,protein2, ... , protein4776	
 	public String addPatientsFromFile(String fileName) {
 		BufferedReader lineReader = null;
 		String toReturn = "Success!";
@@ -69,8 +76,12 @@ public class PatientCollection implements PatientCollectionADT {
 					g = readLine[i];
 					genome.add(Double.parseDouble(g));
 				}
+				
+				//check for duplicate id
 				if (!PatientMap.containsKey(id)) {
-					Patient p = new Patient("unknown", "unknown", id, genome);
+					Predictor pre = new Predictor();
+					String predictor = pre.predict(genome.get(3697), genome.get(3258));
+					Patient p = new Patient("unknown", predictor, id, genome);
 					PatientMap.put(id, p);
 				} else {
 					toReturn = "This " + id + " is already in the system";
@@ -93,7 +104,9 @@ public class PatientCollection implements PatientCollectionADT {
 						genome.add(Double.parseDouble(g));
 					}
 					if (!PatientMap.containsKey(id)) {
-						Patient p = new Patient("unknown", "unknown", id, genome);
+						Predictor pre = new Predictor();
+						String predictor = pre.predict(genome.get(3697), genome.get(3258));
+						Patient p = new Patient("unknown", predictor, id, genome);
 						PatientMap.put(id, p);
 					} else {
 						toReturn = "This " + id + " is already in the system";
@@ -120,16 +133,6 @@ public class PatientCollection implements PatientCollectionADT {
 		}
 		return toReturn;
 	}
-	// Method reads all lines from comma separated file named fileName.
-	// Each line must contain a unique patient identifier followed by exactly 4776
-	// doubles.
-	// If the line does not meet the criteria, it is not added to the patient
-	// collection,
-	// and an error message is included in the return String.
-	// The error message will indicate which line was in error and what the error
-	// was.
-	// expected line format
-	// id,protein1,protein2, ... , protein4776
 
 	// upload the current data file
 	public void uploadFile(String fileName) {
@@ -196,10 +199,10 @@ public class PatientCollection implements PatientCollectionADT {
 	}
 	
 	//write to file
-    public void writing() {
+    public void writingToFile(String fileName) {
         try {
             //Whatever the file path is.
-            File statText = new File("./patientpredictor/test.csv");
+            File statText = new File(fileName);
             FileOutputStream is = new FileOutputStream(statText);
             OutputStreamWriter osw = new OutputStreamWriter(is);    
             Writer w = new BufferedWriter(osw);
@@ -219,12 +222,13 @@ public class PatientCollection implements PatientCollectionADT {
         }
     }
     
+    // The to string method
 	public String toString() {
 		Patient p = new Patient();
 		String g = "";
 		for (String key : PatientMap.keySet()) {
 			p = PatientMap.get(key);
-			g += p.getId() + ", " + p.getGenome().get(3697) + ", " + p.getGenome().get(3258) + "\n";
+			g += p;
 		}
 		return g;
 	}
