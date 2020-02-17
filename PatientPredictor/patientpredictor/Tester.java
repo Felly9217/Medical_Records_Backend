@@ -16,8 +16,7 @@ public class Tester {
 		PatientCollection patientCollection = new PatientCollection();
 		
 		//upload both the old and new data
-		patientCollection.uploadFile("./patientpredictor/data.csv");
-		patientCollection.addPatientsFromFile("./patientpredictor/newdata.csv");
+		System.out.println(patientCollection.addPatientsFromFile("./patientpredictor/newdata.csv"));
 		
 		//test out getPatient method
 		System.out.println("Outputs for get Patient");

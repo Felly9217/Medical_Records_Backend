@@ -18,6 +18,7 @@ public class PatientCollection implements PatientCollectionADT {
 	
 	public PatientCollection() {
 		PatientMap = new HashMap<String, Patient>();
+		uploadFile("./patientpredictor/data.csv");
 	}
 
 	// Return the patient with the given id. Return void if the id does
